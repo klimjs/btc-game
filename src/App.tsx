@@ -1,7 +1,7 @@
-import { ComponentExample } from "@/components/component-example";
+import { GameBoard } from '@/components/game-board'
 
 export function App() {
-return <ComponentExample />;
+  return <GameBoard />
 }
 
-export default App;
+export default App

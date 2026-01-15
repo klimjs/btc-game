@@ -1,3 +1,3 @@
-# React + TypeScript + Vite + shadcn/ui
+# BTC Guess Game
 
-This is a template for a new Vite project with React, TypeScript, and shadcn/ui.
+A web app that allows users to make guesses on whether the market price of Bitcoin (BTC/USD) will be higher or lower after one minute.
