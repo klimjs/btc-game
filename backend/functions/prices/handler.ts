@@ -1,4 +1,5 @@
 import type { APIGatewayProxyHandler } from 'aws-lambda'
+import { buildResponse } from '../../lib/utils'
 
 const coinbaseApiUrl = process.env.COINBASE_API_URL || ''
 
@@ -9,22 +10,12 @@ export const handler: APIGatewayProxyHandler = async () => {
 
     const price = Number(data.data.amount)
 
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      body: JSON.stringify({
-        price,
-        timestamp: new Date().toISOString(),
-      }),
-    }
+    return buildResponse(200, {
+      price,
+      timestamp: new Date().toISOString(),
+    })
   } catch (err) {
     console.error(err)
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to fetch BTC price' }),
-    }
+    return buildResponse(500, { error: 'Failed to fetch BTC price' })
   }
 }
