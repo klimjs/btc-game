@@ -1,4 +1,4 @@
-export function buildResponse(statusCode: number, body: any) {
+export function buildResponse(statusCode: number, body: Record<string, unknown>) {
   return {
     statusCode,
     headers: {
