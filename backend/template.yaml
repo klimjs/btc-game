@@ -53,3 +53,21 @@ Resources:
           Properties:
             Path: /players
             Method: POST
+
+  GetPlayerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: get-player
+      Handler: dist/functions/players/get.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref PlayersTable
+      Environment:
+        Variables:
+          PLAYERS_TABLE: !Ref PlayersTable
+      Events:
+        GetPlayer:
+          Type: Api
+          Properties:
+            Path: /players/{id}
+            Method: GET
