@@ -7,11 +7,11 @@
     "build": "tsc",
     "lint": "eslint ."
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/aws-lambda": "^8.10.130",
     "@types/node": "^20.11.0",
-    "typescript": "^5.3.3",
-    "eslint": "^9.0.0"
+    "eslint": "^9.0.0",
+    "prettier": "^3.8.0",
+    "typescript": "^5.3.3"
   }
 }
