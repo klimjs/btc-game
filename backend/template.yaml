@@ -35,3 +35,21 @@ Resources:
           Properties:
             Path: /prices
             Method: GET
+
+  CreatePlayerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: create-player
+      Handler: dist/functions/players/create.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PlayersTable
+      Environment:
+        Variables:
+          PLAYERS_TABLE: !Ref PlayersTable
+      Events:
+        CreatePlayer:
+          Type: Api
+          Properties:
+            Path: /players
+            Method: POST
