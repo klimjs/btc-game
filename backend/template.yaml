@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: BTC Game Backend
+
+Globals:
+  Function:
+    Timeout: 5
+    Runtime: nodejs18.x
+    MemorySize: 128
+    Environment:
+      Variables:
+        COINBASE_API_URL: 'https://api.coinbase.com/v2/prices/BTC-USD/spot'
+
+Resources:
+  PricesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: prices
+      Handler: dist/functions/prices/handler.handler
+      Events:
+        PricesAPI:
+          Type: HttpApi
+          Properties:
+            Path: /prices
+            Method: GET
