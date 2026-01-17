@@ -12,6 +12,18 @@ Globals:
         COINBASE_API_URL: 'https://api.coinbase.com/v2/prices/BTC-USD/spot'
 
 Resources:
+  PlayersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: btc-game-players
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: playerId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: playerId
+          KeyType: HASH
+
   PricesFunction:
     Type: AWS::Serverless::Function
     Properties:
