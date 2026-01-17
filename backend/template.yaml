@@ -5,7 +5,7 @@ Description: BTC Game Backend
 Globals:
   Function:
     Timeout: 5
-    Runtime: nodejs20.x
+    Runtime: nodejs18.x
     MemorySize: 128
     Environment:
       Variables:
@@ -32,7 +32,7 @@ Resources:
       Cors:
         AllowMethods: "'OPTIONS,GET,POST'"
         AllowHeaders: "'Content-Type'"
-        AllowOrigins: "'*'"
+        AllowOrigin: "'*'"
       MethodSettings:
         - ResourcePath: "/*"
           HttpMethod: "*"
