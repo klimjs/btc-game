@@ -1,16 +1,42 @@
 import { CardAction, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { TrendingUp } from 'lucide-react'
+import { Clock } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { fetchBTCPrice, formatUSD, formatDateTime } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from './ui/spinner'
+
+const BTC_REFRESH_INTERVAL = 15000
 
 export const BTCPrice = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['price'],
+    queryFn: fetchBTCPrice,
+    refetchInterval: BTC_REFRESH_INTERVAL,
+  })
+
   return (
     <>
-      <CardDescription>BTC price in USD</CardDescription>
-      <CardTitle className="text-xl">$1,250.00</CardTitle>
+      <CardDescription>BTC price</CardDescription>
+      <CardTitle className="text-xl">
+        {isLoading ? (
+          <Skeleton className="h-7 w-32" />
+        ) : (
+          formatUSD(data?.price ?? 0)
+        )}
+      </CardTitle>
       <CardAction>
-        <Badge variant="default">
-          <TrendingUp />
-          +12.5%
+        <Badge variant="secondary">
+          {isLoading ? (
+            <>
+              <Spinner /> Syncing
+            </>
+          ) : (
+            <>
+              <Clock />
+              {data && formatDateTime(data.timestamp)}
+            </>
+          )}
         </Badge>
       </CardAction>
     </>
