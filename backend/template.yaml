@@ -5,7 +5,7 @@ Description: BTC Game Backend
 Globals:
   Function:
     Timeout: 5
-    Runtime: nodejs18.x
+    Runtime: nodejs20.x
     MemorySize: 128
     Environment:
       Variables:
@@ -24,6 +24,21 @@ Resources:
         - AttributeName: playerId
           KeyType: HASH
 
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: btc-game-api
+      StageName: Prod
+      Cors:
+        AllowMethods: "'OPTIONS,GET,POST'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigins: "'*'"
+      MethodSettings:
+        - ResourcePath: "/*"
+          HttpMethod: "*"
+          ThrottlingRateLimit: 5
+          ThrottlingBurstLimit: 10
+
   PricesFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -31,8 +46,9 @@ Resources:
       Handler: dist/functions/prices/handler.handler
       Events:
         PricesAPI:
-          Type: HttpApi
+          Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /prices
             Method: GET
 
@@ -51,6 +67,7 @@ Resources:
         CreatePlayer:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /players
             Method: POST
 
@@ -69,5 +86,6 @@ Resources:
         GetPlayer:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /players/{id}
             Method: GET
