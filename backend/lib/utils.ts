@@ -14,10 +14,26 @@ export const buildResponse = (
   }
 }
 
-// TODO: error handling
-export const getCoinbasePrice = async () => {
+export const getCoinbasePrice = async (): Promise<number> => {
+  if (!coinbaseApiUrl) {
+    throw new Error('COINBASE_API_URL is not configured')
+  }
+
   const response = await fetch(coinbaseApiUrl)
+
+  if (!response.ok) {
+    throw new Error(
+      `Coinbase API error: ${response.status} ${response.statusText}`,
+    )
+  }
+
   const data = await response.json()
 
-  return Number(data.data.amount)
+  const amount = Number(data?.data?.amount)
+
+  if (isNaN(amount)) {
+    throw new Error('Invalid price data from Coinbase API')
+  }
+
+  return amount
 }
