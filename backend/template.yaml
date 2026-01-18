@@ -15,7 +15,6 @@ Resources:
   PlayersTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: btc-game-players
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: playerId
@@ -27,17 +26,24 @@ Resources:
   GuessesTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: btc-game-guesses
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
+        - AttributeName: guessId
+          AttributeType: S
         - AttributeName: playerId
           AttributeType: S
         - AttributeName: status
           AttributeType: S
       KeySchema:
-        - AttributeName: playerId
+        - AttributeName: guessId
           KeyType: HASH
       GlobalSecondaryIndexes:
+        - IndexName: player-index
+          KeySchema:
+            - AttributeName: playerId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
         - IndexName: status-index
           KeySchema:
             - AttributeName: status

@@ -38,7 +38,7 @@ export const handler = async () => {
     await ddb.send(
       new UpdateCommand({
         TableName: GUESSES_TABLE,
-        Key: { playerId: guess.playerId },
+        Key: { guessId: guess.guessId },
         UpdateExpression:
           'SET #s = :resolved, resolvedAt = :now, #r = :result, resolvedPrice = :price',
         ConditionExpression: '#s = :pending',

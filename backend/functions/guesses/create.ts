@@ -1,5 +1,5 @@
 import type { APIGatewayProxyHandler } from 'aws-lambda'
-import { GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { QueryCommand, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { randomUUID } from 'crypto'
 import { buildResponse, getCoinbasePrice } from '../../lib/utils'
 import { ddb } from '../../lib/dynamodb'
@@ -16,14 +16,18 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const body = JSON.parse(event.body) as CreateGuessBody
     const { playerId, direction } = body
 
-    const existing = await ddb.send(
-      new GetCommand({
+    const { Items = [] } = await ddb.send(
+      new QueryCommand({
         TableName: GUESSES_TABLE,
-        Key: { playerId },
+        IndexName: 'player-index',
+        KeyConditionExpression: 'playerId = :pid',
+        FilterExpression: '#s = :pending',
+        ExpressionAttributeNames: { '#s': 'status' },
+        ExpressionAttributeValues: { ':pid': playerId, ':pending': 'PENDING' },
       }),
     )
 
-    if (existing.Item?.status === 'PENDING') {
+    if (Items.length > 0) {
       return buildResponse(409, { error: 'Active guess already exists' })
     }
 
