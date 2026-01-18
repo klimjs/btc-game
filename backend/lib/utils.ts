@@ -1,7 +1,9 @@
-export function buildResponse(
+const coinbaseApiUrl = process.env.COINBASE_API_URL || ''
+
+export const buildResponse = (
   statusCode: number,
   body: Record<string, unknown>,
-) {
+) => {
   return {
     statusCode,
     headers: {
@@ -10,4 +12,11 @@ export function buildResponse(
     },
     body: JSON.stringify(body),
   }
+}
+
+export const getCoinbasePrice = async () => {
+  const response = await fetch(coinbaseApiUrl)
+  const data = await response.json()
+
+  return Number(data.data.amount)
 }
