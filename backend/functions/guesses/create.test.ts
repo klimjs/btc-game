@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { QueryCommand, PutCommand } from '@aws-sdk/lib-dynamodb'
 import type { APIGatewayProxyEvent } from 'aws-lambda'
 
+const TEST_PLAYER_ID = '550e8400-e29b-41d4-a716-446655440000'
+
 const { ddbMock, mockGetCoinbasePrice } = vi.hoisted(() => {
   const { mockClient } = require('aws-sdk-client-mock')
   const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb')
@@ -43,12 +45,12 @@ describe('create guess handler', () => {
     ddbMock.on(QueryCommand).resolves({ Items: [] })
     ddbMock.on(PutCommand).resolves({})
 
-    const event = createEvent({ playerId: 'player-1', direction: 'up' })
+    const event = createEvent({ playerId: TEST_PLAYER_ID, direction: 'up' })
     const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(201)
     const body = JSON.parse(result?.body || '{}')
-    expect(body.playerId).toBe('player-1')
+    expect(body.playerId).toBe(TEST_PLAYER_ID)
     expect(body.direction).toBe('up')
     expect(body.status).toBe('PENDING')
     expect(body.priceAtGuess).toBe(50000)
@@ -60,7 +62,7 @@ describe('create guess handler', () => {
       Items: [{ guessId: 'existing-guess', status: 'PENDING' }],
     })
 
-    const event = createEvent({ playerId: 'player-1', direction: 'up' })
+    const event = createEvent({ playerId: TEST_PLAYER_ID, direction: 'up' })
     const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(409)
@@ -81,7 +83,7 @@ describe('create guess handler', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     ddbMock.on(QueryCommand).rejects(new Error('DynamoDB error'))
 
-    const event = createEvent({ playerId: 'player-1', direction: 'up' })
+    const event = createEvent({ playerId: TEST_PLAYER_ID, direction: 'up' })
     const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(500)
@@ -95,7 +97,7 @@ describe('create guess handler', () => {
     ddbMock.on(QueryCommand).resolves({ Items: [] })
     ddbMock.on(PutCommand).resolves({})
 
-    const event = createEvent({ playerId: 'player-1', direction: 'down' })
+    const event = createEvent({ playerId: TEST_PLAYER_ID, direction: 'down' })
     const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(201)
