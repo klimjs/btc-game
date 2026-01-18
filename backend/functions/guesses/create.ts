@@ -24,6 +24,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     const { playerId, direction } = parsed.data
 
+    const price = await getCoinbasePrice()
+
+    // check for existing guess right before creating (minimizes race condition window)
     const { Items = [] } = await ddb.send(
       new QueryCommand({
         TableName: GUESSES_TABLE,
@@ -39,8 +42,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return buildResponse(409, { error: 'Active guess already exists' })
     }
 
-    const price = await getCoinbasePrice()
-
     const guess = {
       playerId,
       guessId: randomUUID(),
@@ -50,7 +51,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       status: 'PENDING',
     }
 
-    // TODO: race condition prevention
     await ddb.send(
       new PutCommand({
         TableName: GUESSES_TABLE,
