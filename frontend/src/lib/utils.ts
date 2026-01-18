@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { format } from 'date-fns'
-import type { BTCPriceResponse } from '@/types/app'
+import type { BTCPriceResponse, Direction } from '@/types/app'
 
 export const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -11,6 +11,18 @@ export function cn(...inputs: ClassValue[]) {
 
 export const fetchBTCPrice = async (): Promise<BTCPriceResponse> => {
   const res = await fetch(`${API_URL}/prices`)
+  return res.json()
+}
+
+export const createGuess = async (playerId: string, direction: Direction) => {
+  const res = await fetch(`${API_URL}/guesses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ playerId, direction }),
+  })
+
+  if (!res.ok) throw new Error('There is an active guess. Please wait.')
+
   return res.json()
 }
 
