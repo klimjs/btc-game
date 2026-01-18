@@ -129,3 +129,23 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /guesses
             Method: POST
+
+  ResolveGuessesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: resolve-guesses
+      Handler: dist/functions/guesses/resolve.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref GuessesTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PlayersTable
+      Environment:
+        Variables:
+          GUESSES_TABLE: !Ref GuessesTable
+          PLAYERS_TABLE: !Ref PlayersTable
+      Events:
+        Every1Minute:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 minute)
