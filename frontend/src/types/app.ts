@@ -14,3 +14,15 @@ export interface StatusConfig {
   title: string
   className?: string
 }
+
+export interface Guess {
+  guessId: string
+  playerId: string
+  direction: Direction
+  priceAtGuess: number
+  guessedAt: string
+  status: 'PENDING' | 'RESOLVED'
+  result?: 'WIN' | 'LOSE'
+  resolvedAt?: string
+  resolvedPrice?: number
+}

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,9 +18,13 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import { usePlayer } from '@/hooks/use-player'
-import { createGuess } from '@/lib/utils'
-import type { Direction, Status, StatusConfig } from '@/types/app'
+import { useCountdown } from '@/hooks/use-countdown'
+import { createGuess, resolveGuess, formatCountdown } from '@/lib/utils'
+import type { Direction, Guess, Status, StatusConfig } from '@/types/app'
 import { Spinner } from '@/components/ui/spinner'
+
+const COUNTDOWN_SECONDS = 60
+const POLLING_INTERVAL = 5000
 
 const statusConfig: Record<Status, StatusConfig> = {
   idle: { icon: <Dice2 />, title: 'Try to guess!' },
@@ -43,8 +47,11 @@ const statusConfig: Record<Status, StatusConfig> = {
 }
 
 export const GameControls = () => {
+  const queryClient = useQueryClient()
   const { player } = usePlayer()
   const [status, setStatus] = useState<Status>('idle')
+  const [currentGuess, setCurrentGuess] = useState<Guess | null>(null)
+  const { countdown, isDone, start, reset } = useCountdown(COUNTDOWN_SECONDS)
 
   const {
     mutate: createGuessMutation,
@@ -53,9 +60,38 @@ export const GameControls = () => {
   } = useMutation({
     mutationFn: (direction: Direction) =>
       createGuess(player?.playerId ?? '', direction),
-    onMutate: () => setStatus('guessing'),
+    onMutate: () => {
+      setStatus('guessing')
+      start()
+    },
+    onSuccess: (guess) => {
+      setCurrentGuess(guess)
+    },
     onError: () => setStatus('error'),
   })
+
+  const { mutate: resolveGuessMutation } = useMutation({
+    mutationFn: (guessId: string) => resolveGuess(guessId),
+    onSuccess: (data) => {
+      if (data.status === 'RESOLVED') {
+        setStatus(data.result === 'WIN' ? 'win' : 'lose')
+        setCurrentGuess(null)
+        reset()
+        queryClient.invalidateQueries({ queryKey: ['player'] })
+      }
+    },
+  })
+
+  useEffect(() => {
+    if (!currentGuess || !isDone) return
+
+    resolveGuessMutation(currentGuess.guessId)
+    const interval = setInterval(() => {
+      resolveGuessMutation(currentGuess.guessId)
+    }, POLLING_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [currentGuess, isDone, resolveGuessMutation])
 
   const guessingDisabled = !player || isCreatingGuess || status === 'guessing'
 
@@ -73,7 +109,7 @@ export const GameControls = () => {
           </ItemTitle>
         </ItemContent>
         <ItemContent>
-          <ItemDescription>0:60</ItemDescription>
+          <ItemDescription>{formatCountdown(countdown)}</ItemDescription>
         </ItemContent>
       </Item>
 
