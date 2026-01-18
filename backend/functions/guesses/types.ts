@@ -1,9 +1,13 @@
-export type Direction = 'up' | 'down'
+import { z } from 'zod'
 
-export type CreateGuessBody = {
-  playerId: string
-  direction: Direction
-}
+export const directionSchema = z.enum(['up', 'down'])
+export type Direction = z.infer<typeof directionSchema>
+
+export const createGuessBodySchema = z.object({
+  playerId: z.string().uuid(),
+  direction: directionSchema,
+})
+export type CreateGuessBody = z.infer<typeof createGuessBodySchema>
 
 export type Guess = {
   playerId: string

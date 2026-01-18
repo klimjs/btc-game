@@ -3,7 +3,7 @@ import { QueryCommand, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { randomUUID } from 'crypto'
 import { buildResponse, getCoinbasePrice } from '../../lib/utils'
 import { ddb } from '../../lib/dynamodb'
-import { CreateGuessBody } from './types'
+import { createGuessBodySchema } from './types'
 
 const GUESSES_TABLE = process.env.GUESSES_TABLE || ''
 
@@ -13,9 +13,16 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return buildResponse(400, { error: 'Request body is required' })
     }
 
-    // TODO: zod validation
-    const body = JSON.parse(event.body) as CreateGuessBody
-    const { playerId, direction } = body
+    const parsed = createGuessBodySchema.safeParse(JSON.parse(event.body))
+
+    if (!parsed.success) {
+      return buildResponse(400, {
+        error: 'Invalid request body',
+        details: parsed.error.flatten().fieldErrors,
+      })
+    }
+
+    const { playerId, direction } = parsed.data
 
     const { Items = [] } = await ddb.send(
       new QueryCommand({
