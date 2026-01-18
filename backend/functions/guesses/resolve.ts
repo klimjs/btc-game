@@ -1,6 +1,7 @@
 import { QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb'
 import { getCoinbasePrice } from '../../lib/utils'
 import { ddb } from '../../lib/dynamodb'
+import type { Guess } from './types'
 
 const GUESSES_TABLE = process.env.GUESSES_TABLE || ''
 const PLAYERS_TABLE = process.env.PLAYERS_TABLE || ''
@@ -8,7 +9,7 @@ const PLAYERS_TABLE = process.env.PLAYERS_TABLE || ''
 const RESOLVE_AFTER_MS = 60000
 
 export const handler = async () => {
-  const [currentPrice, { Items: guesses = [] }] = await Promise.all([
+  const [currentPrice, { Items = [] }] = await Promise.all([
     getCoinbasePrice(),
     ddb.send(
       new QueryCommand({
@@ -20,6 +21,8 @@ export const handler = async () => {
       }),
     ),
   ])
+
+  const guesses = Items as Guess[]
 
   const ready = guesses.filter((g) => {
     const age = Date.now() - new Date(g.guessedAt).getTime()
