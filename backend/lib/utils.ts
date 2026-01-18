@@ -14,6 +14,7 @@ export const buildResponse = (
   }
 }
 
+// TODO: error handling
 export const getCoinbasePrice = async () => {
   const response = await fetch(coinbaseApiUrl)
   const data = await response.json()

@@ -46,7 +46,7 @@ describe('get player handler', () => {
     ddbMock.on(GetCommand).resolves({ Item: player })
 
     const event = createEvent('player-1')
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(200)
     const body = JSON.parse(result?.body || '{}')
@@ -58,7 +58,7 @@ describe('get player handler', () => {
     ddbMock.on(GetCommand).resolves({ Item: undefined })
 
     const event = createEvent('nonexistent-player')
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(404)
     const body = JSON.parse(result?.body || '{}')
@@ -67,7 +67,7 @@ describe('get player handler', () => {
 
   it('returns 400 when playerId missing', async () => {
     const event = createEvent()
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(400)
     const body = JSON.parse(result?.body || '{}')
@@ -75,11 +75,11 @@ describe('get player handler', () => {
   })
 
   it('returns 500 on DynamoDB error', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => { })
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     ddbMock.on(GetCommand).rejects(new Error('DynamoDB error'))
 
     const event = createEvent('player-1')
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(500)
     const body = JSON.parse(result?.body || '{}')

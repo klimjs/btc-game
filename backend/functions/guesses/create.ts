@@ -13,6 +13,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return buildResponse(400, { error: 'Request body is required' })
     }
 
+    // TODO: zod validation
     const body = JSON.parse(event.body) as CreateGuessBody
     const { playerId, direction } = body
 
@@ -42,6 +43,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       status: 'PENDING',
     }
 
+    // TODO: race condition prevention
     await ddb.send(
       new PutCommand({
         TableName: GUESSES_TABLE,

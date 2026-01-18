@@ -14,6 +14,7 @@ export const fetchBTCPrice = async (): Promise<BTCPriceResponse> => {
   return res.json()
 }
 
+// TODO: fetch -> axios
 export const createGuess = async (
   playerId: string,
   direction: Direction,

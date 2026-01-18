@@ -7,6 +7,7 @@ import { isReadyToResolve, resolveGuess } from './utils'
 const GUESSES_TABLE = process.env.GUESSES_TABLE || ''
 
 export const handler = async () => {
+  // fetch current Coinbase price and all PENDING guesses in parallel using the status GSI
   const [currentPrice, { Items = [] }] = await Promise.all([
     getCoinbasePrice(),
     ddb.send(

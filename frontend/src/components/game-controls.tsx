@@ -70,6 +70,7 @@ export const GameControls = () => {
     onError: () => setStatus('error'),
   })
 
+  // TODO: ? move to a separate component together with Item block
   const { mutate: resolveGuessMutation } = useMutation({
     mutationFn: (guessId: string) => resolveGuess(guessId),
     onSuccess: (data) => {
@@ -86,6 +87,8 @@ export const GameControls = () => {
     if (!currentGuess || !isDone) return
 
     resolveGuessMutation(currentGuess.guessId)
+
+    // guess resolution polling in case of the same price
     const interval = setInterval(() => {
       resolveGuessMutation(currentGuess.guessId)
     }, POLLING_INTERVAL)
@@ -94,6 +97,10 @@ export const GameControls = () => {
   }, [currentGuess, isDone, resolveGuessMutation])
 
   const guessingDisabled = !player || isCreatingGuess || status === 'guessing'
+
+  // TODO: show the guess while it is resolving
+
+  // TODO: Kbd shortcuts for up/down in tooltips
 
   return (
     <div className="flex flex-col items-center justify-center py-10 gap-10">

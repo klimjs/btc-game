@@ -44,7 +44,7 @@ describe('create guess handler', () => {
     ddbMock.on(PutCommand).resolves({})
 
     const event = createEvent({ playerId: 'player-1', direction: 'up' })
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(201)
     const body = JSON.parse(result?.body || '{}')
@@ -61,7 +61,7 @@ describe('create guess handler', () => {
     })
 
     const event = createEvent({ playerId: 'player-1', direction: 'up' })
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(409)
     const body = JSON.parse(result?.body || '{}')
@@ -70,7 +70,7 @@ describe('create guess handler', () => {
 
   it('returns 400 when request body is missing', async () => {
     const event = createEvent()
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(400)
     const body = JSON.parse(result?.body || '{}')
@@ -78,11 +78,11 @@ describe('create guess handler', () => {
   })
 
   it('returns 500 on DynamoDB error', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => { })
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     ddbMock.on(QueryCommand).rejects(new Error('DynamoDB error'))
 
     const event = createEvent({ playerId: 'player-1', direction: 'up' })
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(500)
     const body = JSON.parse(result?.body || '{}')
@@ -96,7 +96,7 @@ describe('create guess handler', () => {
     ddbMock.on(PutCommand).resolves({})
 
     const event = createEvent({ playerId: 'player-1', direction: 'down' })
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(201)
     const body = JSON.parse(result?.body || '{}')

@@ -54,7 +54,7 @@ describe('resolve-one guess handler', () => {
     ddbMock.on(UpdateCommand).resolves({})
 
     const event = createEvent('guess-1')
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(200)
     const body = JSON.parse(result?.body || '{}')
@@ -76,7 +76,7 @@ describe('resolve-one guess handler', () => {
     ddbMock.on(GetCommand).resolves({ Item: recentGuess })
 
     const event = createEvent('guess-1')
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(200)
     const body = JSON.parse(result?.body || '{}')
@@ -88,7 +88,7 @@ describe('resolve-one guess handler', () => {
     ddbMock.on(GetCommand).resolves({ Item: undefined })
 
     const event = createEvent('nonexistent-guess')
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(404)
     const body = JSON.parse(result?.body || '{}')
@@ -97,7 +97,7 @@ describe('resolve-one guess handler', () => {
 
   it('returns 400 if guessId missing', async () => {
     const event = createEvent()
-    const result = await handler(event, {} as any, () => { })
+    const result = await handler(event, {} as any, () => {})
 
     expect(result?.statusCode).toBe(400)
     const body = JSON.parse(result?.body || '{}')

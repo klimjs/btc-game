@@ -24,7 +24,11 @@ describe('prices handler', () => {
   })
 
   it('returns price successfully', async () => {
-    const result = await handler({} as APIGatewayProxyEvent, {} as any, () => { })
+    const result = await handler(
+      {} as APIGatewayProxyEvent,
+      {} as any,
+      () => {},
+    )
 
     expect(result?.statusCode).toBe(200)
     const body = JSON.parse(result?.body || '{}')
@@ -33,10 +37,14 @@ describe('prices handler', () => {
   })
 
   it('returns 500 on API error', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => { })
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockGetCoinbasePrice.mockRejectedValue(new Error('API error'))
 
-    const result = await handler({} as APIGatewayProxyEvent, {} as any, () => { })
+    const result = await handler(
+      {} as APIGatewayProxyEvent,
+      {} as any,
+      () => {},
+    )
 
     expect(result?.statusCode).toBe(500)
     const body = JSON.parse(result?.body || '{}')

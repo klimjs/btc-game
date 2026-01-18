@@ -8,7 +8,10 @@ import { Spinner } from './ui/spinner'
 
 const BTC_REFRESH_INTERVAL = 15000
 
+// TODO: show how frequently the BTC price is updated in a tooltip
+
 export const BTCPrice = () => {
+  // TODO: move into a hook
   const { data, isLoading } = useQuery({
     queryKey: ['price'],
     queryFn: fetchBTCPrice,

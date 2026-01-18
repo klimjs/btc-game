@@ -19,6 +19,7 @@ async function createPlayer(): Promise<PlayerResponse> {
   return data
 }
 
+// create a player in case of mismatch between localStorage and DB
 async function getOrCreatePlayer(): Promise<PlayerResponse> {
   const playerId = localStorage.getItem(PLAYER_ID_KEY)
 

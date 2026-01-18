@@ -32,7 +32,11 @@ describe('create player handler', () => {
   it('creates player successfully', async () => {
     ddbMock.on(PutCommand).resolves({})
 
-    const result = await handler({} as APIGatewayProxyEvent, {} as any, () => { })
+    const result = await handler(
+      {} as APIGatewayProxyEvent,
+      {} as any,
+      () => {},
+    )
 
     expect(result?.statusCode).toBe(201)
     const body = JSON.parse(result?.body || '{}')
@@ -42,10 +46,14 @@ describe('create player handler', () => {
   })
 
   it('returns 500 on DynamoDB error', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => { })
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     ddbMock.on(PutCommand).rejects(new Error('DynamoDB error'))
 
-    const result = await handler({} as APIGatewayProxyEvent, {} as any, () => { })
+    const result = await handler(
+      {} as APIGatewayProxyEvent,
+      {} as any,
+      () => {},
+    )
 
     expect(result?.statusCode).toBe(500)
     const body = JSON.parse(result?.body || '{}')

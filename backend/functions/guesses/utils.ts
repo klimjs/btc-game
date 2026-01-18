@@ -60,6 +60,7 @@ export async function resolveGuess(
       }),
     )
     .catch((err) => {
+      // in case of zero score
       if (err.name !== 'ConditionalCheckFailedException') throw err
     })
 
