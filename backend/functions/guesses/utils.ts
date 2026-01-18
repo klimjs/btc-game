@@ -5,7 +5,7 @@ import type { Guess } from './types'
 const GUESSES_TABLE = process.env.GUESSES_TABLE || ''
 const PLAYERS_TABLE = process.env.PLAYERS_TABLE || ''
 
-export const RESOLVE_AFTER_MS = 60000
+export const RESOLVE_AFTER_MS = 59000 // 1s buffer for network latency
 
 export function isReadyToResolve(guess: Guess, currentPrice: number): boolean {
   const age = Date.now() - new Date(guess.guessedAt).getTime()
