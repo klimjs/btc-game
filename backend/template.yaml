@@ -110,3 +110,22 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /players/{id}
             Method: GET
+
+  CreateGuessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: create-guess
+      Handler: dist/functions/guesses/create.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref GuessesTable
+      Environment:
+        Variables:
+          GUESSES_TABLE: !Ref GuessesTable
+      Events:
+        CreateGuess:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /guesses
+            Method: POST
