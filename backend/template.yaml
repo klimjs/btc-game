@@ -136,6 +136,28 @@ Resources:
             Path: /guesses
             Method: POST
 
+  ResolveOneGuessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: resolve-one-guess
+      Handler: dist/functions/guesses/resolve-one.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref GuessesTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PlayersTable
+      Environment:
+        Variables:
+          GUESSES_TABLE: !Ref GuessesTable
+          PLAYERS_TABLE: !Ref PlayersTable
+      Events:
+        ResolveOneGuess:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /guesses/{id}/resolve
+            Method: POST
+
   ResolveGuessesFunction:
     Type: AWS::Serverless::Function
     Properties:
