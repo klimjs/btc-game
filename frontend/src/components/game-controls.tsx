@@ -67,7 +67,10 @@ export const GameControls = () => {
     onSuccess: (guess) => {
       setCurrentGuess(guess)
     },
-    onError: () => setStatus('error'),
+    onError: () => {
+      setStatus('error')
+      reset()
+    },
   })
 
   // TODO: ? move to a separate component together with Item block
