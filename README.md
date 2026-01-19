@@ -2,6 +2,13 @@
 
 A web app that allows users to make guesses on whether the market price of Bitcoin (BTC/USD) will be higher or lower after one minute.
 
+## Important Notice
+
+There are 2 main ways of implementing an app:
+
+- Frontend orchestration: Using the backend only for updating the score based on the BTC price. It's more simple, but e.g. if the user closes the window the guess is lost and no data for future stats.
+- (Chosen for this assignment) **Backend-heavy approach**: Strong backend to save the guesses, resolving them, having the user id stored in cloud storage and DB as well. It opens more fair guesses and even ability to close the browser. Overall more robust solution.
+
 ## Tech Stack
 
 ### Backend
@@ -43,6 +50,7 @@ Deploy via Vercel CLI or connect your Git repository. Ensure `VITE_API_URL` envi
 - SAM is used for controlling AWS infrastructure as code
 - Serverless architecture with Lambda functions and DynamoDB
 - EventBridge scheduled job runs every minute to resolve guesses
+- Rate Limiting: API Gateway throttling configured (5 requests/second, burst limit 10) since there's no API authentication
 
 ### Core Features
 
@@ -63,5 +71,5 @@ Deploy via Vercel CLI or connect your Git repository. Ensure `VITE_API_URL` envi
 
 ### UI Development
 
-- Built with `shadcn/ui` for fast, accessible component development (using Base UI)
+- Initialized with `shadcn/ui start` for fast, accessible component development (using Base UI)
 - Real-time countdown and status updates
