@@ -5,10 +5,13 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchBTCPrice, formatUSD, formatDateTime } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from './ui/spinner'
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip'
 
 const BTC_REFRESH_INTERVAL = 15000
-
-// TODO: show how frequently the BTC price is updated in a tooltip
 
 export const BTCPrice = () => {
   // TODO: move into a hook
@@ -25,7 +28,12 @@ export const BTCPrice = () => {
         {isLoading ? (
           <Skeleton className="h-7 w-32" />
         ) : (
-          formatUSD(data?.price ?? 0)
+          <Tooltip>
+            <TooltipTrigger>{formatUSD(data?.price ?? 0)}</TooltipTrigger>
+            <TooltipContent>
+              <p>Updated every {BTC_REFRESH_INTERVAL / 1000} seconds</p>
+            </TooltipContent>
+          </Tooltip>
         )}
       </CardTitle>
       <CardAction>
