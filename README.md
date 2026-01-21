@@ -7,7 +7,7 @@ A web app that allows users to make guesses on whether the market price of Bitco
 There are 2 main ways of implementing an app:
 
 - Frontend orchestration: Using the backend only for updating the score based on the BTC price. It's more simple, but e.g. if the user closes the window the guess is lost and no data for future stats.
-- (Chosen for this assignment) **Backend-heavy approach**: Strong backend to save the guesses, resolving them, having the user id stored in cloud storage and DB as well. It opens more fair guesses and even ability to close the browser. Overall more robust solution.
+- (Chosen for this assignment) **Backend-heavy approach**: Strong backend to save the guesses, resolving them, having the user id stored in `localStorage` and DB as well. It opens more fair guesses and even ability to close the browser. Overall more robust solution.
 
 ## Tech Stack
 
@@ -52,12 +52,12 @@ Deploy via Vercel CLI or connect your Git repository. Ensure `VITE_API_URL` envi
 - EventBridge scheduled job runs every minute to resolve guesses
 - Rate Limiting: API Gateway throttling configured (5 requests/second, burst limit 10) since there's no API authentication
 
-### Core Features
+### Core Logic & Features
 
-- **Guess Resolution**: Resolves guesses even if the user closes the browser via EventBridge scheduled job
+- **Guesses resolution logic**: Guesses resolved after 60 seconds; frontend polls every 5 seconds if price hasn't changed
+- **Forgotten guesses resolution**: Resolves guesses even if the user closes the browser via EventBridge scheduled job
 - **One Guess Per User**: Blocks creating more than one active guess per user
 - **Player Management**: Player creation uses `localStorage` for persistence and syncs with DB
-- **Resolution Logic**: Guesses resolve after 60 seconds; frontend polls every 5 seconds if price hasn't changed
 - **Price Updates**: BTC price fetched separately from guess requests, updating every 15 seconds
 - **Data Storage**: DynamoDB stores player scores and guess history for potential stats/analytics
 
